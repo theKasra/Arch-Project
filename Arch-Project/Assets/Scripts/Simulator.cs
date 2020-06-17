@@ -248,7 +248,6 @@ public class Simulator : MonoBehaviour
     // Core action of simulation
     private void RunSimulation()
     {
-        accessTimesCount++;
         DirectMap();
         DisplayResults();
     }
@@ -271,6 +270,7 @@ public class Simulator : MonoBehaviour
                 "Block offset bits: " + offsetString + "\n\n" +
                 "Hit: " + IsHit() + "\n" + "Miss: " + IsMiss() + "\n\n" +
                 "Validity: " + isValid;
+                accessTimesCount++;
             }
 
             else if(calculateClicked)
