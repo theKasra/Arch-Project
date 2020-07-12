@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Simulator.unity
+    path: Assets/Scenes/Start.unity
+    guid: eb4afa5661bf589448188b9094376bc7
+  - enabled: 1
+    path: Assets/Scenes/Direct Map.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Semi Associative.unity
+    guid: 3bcaad4a2898b6e4185bc155b35f5798
+  - enabled: 1
+    path: Assets/Scenes/Fully Associative.unity
+    guid: 3ea59fb567cca224a9e57517955d3715
   m_configObjects: {}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class Simulator : MonoBehaviour
 {
@@ -56,16 +57,29 @@ public class Simulator : MonoBehaviour
 
     private bool stepClicked, calculateClicked;
 
+    List<string> LRU;
+    int faCounter = 0, LRUlimit = 0;
 
     Cache cache;
 
     // Start is called before the first frame update
     void Start()
     {
-        cache = FindObjectOfType<Cache>();
-        mainCanvas.enabled = false;
-        errorCanvas.enabled = false;
-        PlayerPrefs.DeleteAll();
+        if(SceneManager.GetActiveScene().name == "Start")
+        {
+            return;
+        }
+
+        else
+        {
+            cache = FindObjectOfType<Cache>();
+            mainCanvas.enabled = false;
+            errorCanvas.enabled = false;
+
+            LRU = new List<string>(cache.cache.Length);
+
+            PlayerPrefs.DeleteAll();
+        }
     }
 
     // Update is called once per frame
@@ -207,6 +221,63 @@ public class Simulator : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    // Fully Associative, on spectrum from Head to Tail of LRU list, head = most recent
+    private void FullyAssociative()
+    {
+        int address = Bin2Dec(binAddress);
+
+        if(LRU.Contains(binAddress))
+        {
+            // move most recently used to the front
+            LRU.Remove(binAddress);
+            LRU.Insert(0, binAddress);
+            hitCount++;
+            isHit = true;
+            isMiss = false;
+            isValid = true;
+        }
+
+        else
+        {
+            if(LRUlimit == cache.cache.Length)
+            {
+                for(int i=0; i<cache.cache.Length; i++)
+                {
+                    if(cache.cache[i] == Bin2Dec(LRU[LRUlimit]))
+                    {
+                        cache.cache[i] = address;
+                    }
+                }
+
+                // victimize
+                LRU.RemoveAt(LRU.Count);
+                LRU.Insert(0, binAddress);
+                missCount++;
+                isMiss = true;
+                isHit = false;
+                isValid = false;
+            }
+
+            else
+            {
+                LRU.Insert(0, binAddress);
+                cache.cache[LRUlimit] = address;
+                LRUlimit++;
+                missCount++;
+                isMiss = true;
+                isHit = false;
+                isValid = false;
+            }
+        }
+        
+    }
+
+    // Semi Associative
+    private void SemiAssociative()
+    {
+
+    }
+
     // Sets inputs
     private void SetInputs()
     {
@@ -237,20 +308,45 @@ public class Simulator : MonoBehaviour
 
         if (MemorySizeCheck() && AddressLengthCheck())
         {
-            offsetCount = OffsetBitCount();
-            tagCount = TagBitCount();
-            SetTag();
-            SetIndex();
-            SetOffset();
+            if(SceneManager.GetActiveScene().name == "Fully Associative")
+            {
+                //
+                tagCount = TagBitCount();
+                offsetCount = OffsetBitCount();
+                tagCount = TagBitCount();
+                offsetCount = OffsetBitCount();
+                offsetString = binAddress.Substring(cache.IndexBitCount() + tagCount, offsetCount);
+            }
+
+            else
+            {
+                offsetCount = OffsetBitCount();
+                tagCount = TagBitCount();
+                SetTag();
+                SetIndex();
+                SetOffset();
+            }
         }
     }
 
+
     // Core action of simulation
-    private void RunSimulation()
+    private void RunDMSimulation()
     {
         DirectMap();
         DisplayResults();
     }
+    private void RunSASimulation()
+    {
+        SemiAssociative();
+        DisplayResults();
+    }
+    private void RunFASimulation()
+    {
+        FullyAssociative();
+        DisplayResults();
+    }
+
 
     // Shows the results in a correct format
     private void DisplayResults()
@@ -364,8 +460,7 @@ public class Simulator : MonoBehaviour
     }
 
 
-    // Button functions
-    public void Step()
+    private void StepDM()
     {
         stepClicked = true;
         calculateClicked = false;
@@ -382,13 +477,55 @@ public class Simulator : MonoBehaviour
                     runCounter++;
                 }
 
-                RunSimulation();
+                RunDMSimulation();
             }
         }
 
         else
         {
             DisplayResults();
+        }
+    }
+    private void StepSA()
+    {
+
+    }
+    private void StepFA()
+    {
+        stepClicked = true;
+        calculateClicked = false;
+
+        if (cache.VerifyInputs())
+        {
+            cache.CacheInit();
+
+            if (CheckInputFields())
+            {
+                if (runCounter == 0 && AddressLengthCheck())
+                {
+                    cache.InitCacheArray();
+                    runCounter++;
+                }
+
+                RunFASimulation();
+            }
+        }
+
+        else
+        {
+            DisplayResults();
+        }
+    }
+
+
+    // Button functions
+    public void Step()
+    {
+        switch (SceneManager.GetActiveScene().buildIndex)
+        {
+            case 1: StepDM(); break;
+            case 2: StepSA(); break;
+            case 3: StepFA(); break;
         }
     }
     public void Calculate()
@@ -425,6 +562,22 @@ public class Simulator : MonoBehaviour
     {
         errorCanvas.enabled = false;
         mainCanvas.enabled = true;
+    }
+    public void GoToDirectMap()
+    {
+        SceneManager.LoadScene("Direct Map");
+    }
+    public void GoToSemiAssociative()
+    {
+        SceneManager.LoadScene("Semi Associative");
+    }
+    public void GoToFullyAssociative()
+    {
+        SceneManager.LoadScene("Fully Associative");
+    }
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
     public void Quit()
     {
