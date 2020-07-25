@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Direct Map.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Scenes/Semi Associative.unity
+    path: Assets/Scenes/Set Associative.unity
     guid: 3bcaad4a2898b6e4185bc155b35f5798
   - enabled: 1
     path: Assets/Scenes/Fully Associative.unity

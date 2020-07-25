@@ -233,7 +233,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1830279219}
+      objectReference: {fileID: 1766856583}
     - target: {fileID: 1689714639680511365, guid: 16724b231cfd5a044ae0c1cffbbcd2b0,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -472,7 +472,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1830279219}
+      objectReference: {fileID: 1766856583}
     - target: {fileID: 6708033164113194553, guid: 1a2c714782445354c89406aae39a0083,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -482,7 +482,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1830279219}
+      objectReference: {fileID: 1766856583}
     - target: {fileID: 6708033164301566853, guid: 1a2c714782445354c89406aae39a0083,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -507,7 +507,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1830279219}
+      objectReference: {fileID: 0}
     - target: {fileID: 6708033164422540586, guid: 1a2c714782445354c89406aae39a0083,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -524,7 +524,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1830279219}
+      objectReference: {fileID: 1766856583}
     - target: {fileID: 6708033165170130381, guid: 1a2c714782445354c89406aae39a0083,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -691,7 +691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1779497966
+--- !u!1 &1766856582
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -699,45 +699,57 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1779497968}
-  - component: {fileID: 1779497967}
+  - component: {fileID: 1766856584}
+  - component: {fileID: 1766856583}
   m_Layer: 0
-  m_Name: Cache
+  m_Name: Program
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1779497967
+--- !u!114 &1766856583
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1779497966}
+  m_GameObject: {fileID: 1766856582}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30fba07311b665c44b18ab9b6b060811, type: 3}
+  m_Script: {fileID: 11500000, guid: f0e0b3bb9188b8d4299a9a41d89a438c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  memoryKB: {fileID: 153790263}
+  memoryMB: {fileID: 1596330695}
   cacheKB: {fileID: 1086089563}
   cacheMB: {fileID: 1642342933}
+  memorySizeInput: {fileID: 1515348291}
   cacheSizeInput: {fileID: 1885755725}
   blockSizeInput: {fileID: 1534100130}
-  cache: 
---- !u!4 &1779497968
+  addressInput: {fileID: 1782607651}
+  cacheAccessTimeInput: {fileID: 2122487479}
+  missPenaltyTimeInput: {fileID: 726076135}
+  setsInput: {fileID: 0}
+  waysInput: {fileID: 0}
+  resultText: {fileID: 1805355551}
+  mainCanvas: {fileID: 893370455}
+  instructionsCanvas: {fileID: 2144083460}
+  errorCanvas: {fileID: 236188426}
+  errorText: {fileID: 870836995}
+--- !u!4 &1766856584
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1779497966}
+  m_GameObject: {fileID: 1766856582}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1782607651 stripped
 MonoBehaviour:
@@ -763,61 +775,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1830279218
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1830279220}
-  - component: {fileID: 1830279219}
-  m_Layer: 0
-  m_Name: Simulator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1830279219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1830279218}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d1359a541f3ef94eb682c65aee75a4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  memoryKB: {fileID: 153790263}
-  memoryMB: {fileID: 1596330695}
-  memorySizeInput: {fileID: 1515348291}
-  addressInput: {fileID: 1782607651}
-  cacheAccessTimeInput: {fileID: 2122487479}
-  missPenaltyTimeInput: {fileID: 726076135}
-  resultText: {fileID: 1805355551}
-  mainCanvas: {fileID: 893370455}
-  instructionsCanvas: {fileID: 2144083460}
-  errorCanvas: {fileID: 236188426}
-  errorText: {fileID: 870836995}
-  errorMessage: 
---- !u!4 &1830279220
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1830279218}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1885755725 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6708033163277849353, guid: 1a2c714782445354c89406aae39a0083,
@@ -841,7 +798,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1830279219}
+      objectReference: {fileID: 0}
     - target: {fileID: 2852750936663904642, guid: bd7b2f2248b3d9c4d86eb2605d2d9586,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName

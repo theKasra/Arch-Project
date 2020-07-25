@@ -203,7 +203,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 638044121}
+      - m_Target: {fileID: 958013189}
         m_MethodName: GoToDirectMap
         m_Mode: 1
         m_Arguments:
@@ -327,61 +327,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 484279743}
   m_CullTransparentMesh: 0
---- !u!1 &638044120
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 638044122}
-  - component: {fileID: 638044121}
-  m_Layer: 0
-  m_Name: Simulator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &638044121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 638044120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d1359a541f3ef94eb682c65aee75a4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  memoryKB: {fileID: 0}
-  memoryMB: {fileID: 0}
-  memorySizeInput: {fileID: 0}
-  addressInput: {fileID: 0}
-  cacheAccessTimeInput: {fileID: 0}
-  missPenaltyTimeInput: {fileID: 0}
-  resultText: {fileID: 0}
-  mainCanvas: {fileID: 0}
-  instructionsCanvas: {fileID: 0}
-  errorCanvas: {fileID: 0}
-  errorText: {fileID: 0}
-  errorMessage: 
---- !u!4 &638044122
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 638044120}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &819153747
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,6 +404,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 819153747}
   m_CullTransparentMesh: 0
+--- !u!1 &958013187
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 958013188}
+  - component: {fileID: 958013189}
+  m_Layer: 0
+  m_Name: Scene Loader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &958013188
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958013187}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &958013189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958013187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 464e569d61ba024439ac481a23847683, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1145107075
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +460,7 @@ GameObject:
   - component: {fileID: 1145107078}
   - component: {fileID: 1145107077}
   m_Layer: 5
-  m_Name: Semi Associative Button
+  m_Name: Set Associative Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -541,8 +529,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 638044121}
-        m_MethodName: GoToSemiAssociative
+      - m_Target: {fileID: 958013189}
+        m_MethodName: GoToSetAssociative
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -716,7 +704,7 @@ PrefabInstance:
     - target: {fileID: 3584593210113130689, guid: de0d3f1b43f0c004bbdb9f98c49e3ef7,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3584593210113130689, guid: de0d3f1b43f0c004bbdb9f98c49e3ef7,
         type: 3}
@@ -822,7 +810,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 638044121}
+      - m_Target: {fileID: 958013189}
         m_MethodName: GoToFullyAssociative
         m_Mode: 1
         m_Arguments:
@@ -937,7 +925,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Semi-Associative
+  m_Text: Set Associative
 --- !u!222 &2035007737
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1165,7 +1153,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 638044121}
+      - m_Target: {fileID: 958013189}
         m_MethodName: Quit
         m_Mode: 1
         m_Arguments:

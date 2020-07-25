@@ -224,56 +224,64 @@ public class Simulator : MonoBehaviour
     // Fully Associative, on spectrum from Head to Tail of LRU list, head = most recent
     private void FullyAssociative()
     {
-        int address = Bin2Dec(binAddress);
+        //int address = Bin2Dec(binAddress);
 
-        if(LRU.Contains(binAddress))
-        {
-            // move most recently used to the front
-            LRU.Remove(binAddress);
-            LRU.Insert(0, binAddress);
-            hitCount++;
-            isHit = true;
-            isMiss = false;
-            isValid = true;
-        }
+        //if(LRU.Contains(binAddress))
+        //{
+        //    // move most recently used to the front
+        //    LRU.Remove(binAddress);
+        //    LRU.Insert(0, binAddress);
+        //    hitCount++;
+        //    isHit = true;
+        //    isMiss = false;
+        //    isValid = true;
+        //}
 
-        else
-        {
-            if(LRUlimit == cache.cache.Length)
-            {
-                for(int i=0; i<cache.cache.Length; i++)
-                {
-                    if(cache.cache[i] == Bin2Dec(LRU[LRUlimit]))
-                    {
-                        cache.cache[i] = address;
-                    }
-                }
+        //else
+        //{
+        //    if(LRUlimit == cache.cache.Length)
+        //    {
+        //        for(int i=0; i<cache.cache.Length; i++)
+        //        {
+        //            if(cache.cache[i] == Bin2Dec(LRU[LRUlimit]))
+        //            {
+        //                cache.cache[i] = address;
+        //            }
+        //        }
 
-                // victimize
-                LRU.RemoveAt(LRU.Count);
-                LRU.Insert(0, binAddress);
-                missCount++;
-                isMiss = true;
-                isHit = false;
-                isValid = false;
-            }
+        //        // victimize
+        //        LRU.RemoveAt(LRU.Count);
+        //        LRU.Insert(0, binAddress);
+        //        missCount++;
+        //        isMiss = true;
+        //        isHit = false;
+        //        isValid = false;
+        //    }
 
-            else
-            {
-                LRU.Insert(0, binAddress);
-                cache.cache[LRUlimit] = address;
-                LRUlimit++;
-                missCount++;
-                isMiss = true;
-                isHit = false;
-                isValid = false;
-            }
-        }
+        //    else
+        //    {
+        //        LRU.Insert(0, binAddress);
+        //        //cache.cache[LRUlimit] = address;
+
+        //        for(int i=0; i<cache.GetBlockSize(); i++)
+        //        {
+        //            cache.cache[LRUlimit] = address;
+        //            address++;
+        //            LRUlimit++;
+        //        }
+
+        //        //LRUlimit++;
+        //        missCount++;
+        //        isMiss = true;
+        //        isHit = false;
+        //        isValid = false;
+        //    }
+        //}
         
     }
 
     // Semi Associative
-    private void SemiAssociative()
+    private void SetAssociative()
     {
 
     }
@@ -316,6 +324,7 @@ public class Simulator : MonoBehaviour
                 tagCount = TagBitCount();
                 offsetCount = OffsetBitCount();
                 offsetString = binAddress.Substring(cache.IndexBitCount() + tagCount, offsetCount);
+                tagString = binAddress.Substring(0, tagCount + cache.IndexBitCount());
             }
 
             else
@@ -338,7 +347,7 @@ public class Simulator : MonoBehaviour
     }
     private void RunSASimulation()
     {
-        SemiAssociative();
+        SetAssociative();
         DisplayResults();
     }
     private void RunFASimulation()
@@ -567,9 +576,9 @@ public class Simulator : MonoBehaviour
     {
         SceneManager.LoadScene("Direct Map");
     }
-    public void GoToSemiAssociative()
+    public void GoToSetAssociative()
     {
-        SceneManager.LoadScene("Semi Associative");
+        SceneManager.LoadScene("Set Associative");
     }
     public void GoToFullyAssociative()
     {
