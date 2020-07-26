@@ -34,10 +34,7 @@ public class Program : MonoBehaviour
 
     private string binAddress;
 
-    private bool isHit, isMiss, isValid;
-    private int hitCount, missCount;
-
-    private int[] cache;
+    private int[] dmCache;
     private bool[,] tagIndexTable;
 
     private List<string> LRU;
@@ -50,12 +47,18 @@ public class Program : MonoBehaviour
     private int runCounter;
 
     private bool stepClicked, calculateClicked;
+    private float accessTime;
     private int accessTimesCount = 0;
+    private bool isHit, isMiss, isValid;
+    private int hitCount, missCount;
 
     // Start is called before the first frame update
     void Start()
     {
         runCounter = 0;
+        instructionsCanvas.enabled = true;
+        mainCanvas.enabled = false;
+        errorCanvas.enabled = false;
 
         // Test
         //memorySize = 1024 * 1024;
@@ -151,7 +154,7 @@ public class Program : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     // Converts hexadecimal address to binary address
@@ -182,67 +185,79 @@ public class Program : MonoBehaviour
     // Sets inputs
     private void SetInputs()
     {
-        if (memoryKB.isOn == true)
+        try
         {
-            memorySize = long.Parse(memorySizeInput.text) * 1024;
-        }
+            if (memoryKB.isOn == true)
+            {
+                memorySize = long.Parse(memorySizeInput.text) * 1024;
+            }
 
-        else if (memoryMB.isOn == true)
-        {
-            memorySize = long.Parse(memorySizeInput.text) * 1024 * 1024;
-        }
+            else if (memoryMB.isOn == true)
+            {
+                memorySize = long.Parse(memorySizeInput.text) * 1024 * 1024;
+            }
 
-        if (cacheKB.isOn == true)
-        {
-            cacheSize = long.Parse(cacheSizeInput.text) * 1024;
-        }
+            if (cacheKB.isOn == true)
+            {
+                cacheSize = long.Parse(cacheSizeInput.text) * 1024;
+            }
 
-        else if (cacheMB.isOn == true)
+            else if (cacheMB.isOn == true)
+            {
+                cacheSize = long.Parse(cacheSizeInput.text) * 1024 * 1024;
+            }
+
+
+
+            hexAddress = addressInput.text;
+            Hex2Bin(hexAddress);
+
+            cacheAccessTime = float.Parse(cacheAccessTimeInput.text);
+            missPenaltyTime = float.Parse(missPenaltyTimeInput.text);
+            blockSize = int.Parse(blockSizeInput.text);
+
+            if (SceneManager.GetActiveScene().name == "Direct Map" && runCounter == 0)
+            {
+                tagIndexTable = new bool[(int)Math.Pow(2, TagBitCount()), (int)Math.Pow(2, IndexBitCount())];
+                dmCache = new int[cacheSize];
+                runCounter++;
+            }
+
+            else if (SceneManager.GetActiveScene().name == "Fully Associative" && runCounter == 0)
+            {
+                LRUlimit = (int)Math.Pow(2, TagBitCount());
+                LRU = new List<string>(LRUlimit);
+                runCounter++;
+            }
+
+            else if (SceneManager.GetActiveScene().name == "Set Associative")
+            {
+                sets = int.Parse(setsInput.text);
+                ways = int.Parse(waysInput.text);
+
+                if (runCounter == 0)
+                {
+                    jaggedArray = new int[sets][];
+
+                    for (int i = 0; i < sets; i++)
+                    {
+                        jaggedArray[i] = new int[ways];
+                    }
+                    
+                    setsInput.enabled = false;
+                    waysInput.enabled = false;
+                    runCounter++;
+                }
+            }
+        }
+        catch (Exception e)
         {
-            cacheSize = long.Parse(cacheSizeInput.text) * 1024 * 1024;
+            errorText.text = e.Message;
+            ShowErrorCanvas();
+            throw;
         }
 
         
-
-        hexAddress = addressInput.text;
-        Hex2Bin(hexAddress);
-
-        cacheAccessTime = float.Parse(cacheAccessTimeInput.text);
-        missPenaltyTime = float.Parse(missPenaltyTimeInput.text);
-        blockSize = int.Parse(blockSizeInput.text);
-
-        if(SceneManager.GetActiveScene().name == "Direct Map" && runCounter == 0)
-        {
-            tagIndexTable = new bool[(int)Math.Pow(2, TagBitCount()), (int)Math.Pow(2, IndexBitCount())];
-            cache = new int[cacheSize];
-            runCounter++;
-        }
-
-        else if(SceneManager.GetActiveScene().name == "Fully Associative" && runCounter == 0)
-        {
-            LRUlimit = (int)Math.Pow(2, TagBitCount());
-            LRU = new List<string>(LRUlimit);
-            runCounter++;
-        }
-
-        else if(SceneManager.GetActiveScene().name == "Set Associative")
-        {
-            sets = int.Parse(setsInput.text);
-            ways = int.Parse(waysInput.text);
-
-            if(runCounter == 0)
-            {
-                // creating arrays of array
-                jaggedArray = new int[sets][];
-
-                for (int i = 0; i < sets; i++)
-                {
-                    jaggedArray[i] = new int[ways];
-                }
-
-                runCounter++;
-            }
-        }
     }
 
 
@@ -303,13 +318,13 @@ public class Program : MonoBehaviour
         int index = Bin2Dec(Index());
         int tag = Bin2Dec(Tag());
 
-        if(cache[index] == 0)
+        if(dmCache[index] == 0)
         {
             isValid = false;
             isMiss = true;
             isHit = false;
             missCount++;
-            cache[index] = 1;
+            dmCache[index] = 1;
             tagIndexTable[tag, index] = true;
         }
 
@@ -355,7 +370,7 @@ public class Program : MonoBehaviour
                 // Victimize
                 LRU.RemoveAt(LRUlimit);
                 LRU.Insert(0, tag);
-                // validity?
+                isValid = false;
                 isMiss = true;
                 isHit = false;
                 missCount++;
@@ -364,6 +379,7 @@ public class Program : MonoBehaviour
             else
             {
                 LRU.Add(tag);
+                isValid = false;
                 isMiss = true;
                 isHit = false;
                 missCount++;
@@ -372,10 +388,10 @@ public class Program : MonoBehaviour
     }
     private void SetAssociative()
     {
-        
+
     }
 
-
+    // Step and Calculate button functions
     public void Step()
     {
         stepClicked = true;
@@ -384,26 +400,19 @@ public class Program : MonoBehaviour
         switch (SceneManager.GetActiveScene().buildIndex)
         {
             case 1: DM(); break;
-            //case 2: SA(); break;
+            case 2: SA(); break;
             case 3: FA(); break;
         }
     }
-
-    private void DM()
+    public void Calculate()
     {
-        SetInputs();
-        DirectMap();
-        DisplayResults();
-        accessTimesCount++;
-    }
-    private void FA()
-    {
-        SetInputs();
-        FullyAssociative();
-        DisplayResults();
-        accessTimesCount++;
-    }
+        calculateClicked = true;
+        stepClicked = false;
 
+        accessTime = cacheAccessTime + (MissRate() * missPenaltyTime);
+
+        DisplayResults();
+    }
 
     private void DisplayResults()
     {
@@ -422,16 +431,51 @@ public class Program : MonoBehaviour
             "Validity: " + isValid;
         }
 
-        //else if (calculateClicked)
-        //{
-        //    resultText.text = "Access times count: " + accessTimesCount + "\n\n" +
-        //        "Hit count: " + hitCount + "\n" + "Hit rate: " + hitRate + "\n\n" +
-        //        "Miss count: " + missCount + "\n" + "Miss rate: " + missRate + "\n\n" +
-        //        "Access Time: " + accessTime;
-        //}
+        else if (calculateClicked)
+        {
+            resultText.text = "Access times count: " + accessTimesCount + "\n\n" +
+                "Hit count: " + hitCount + "\n" + "Hit rate: " + HitRate() + "\n\n" +
+                "Miss count: " + missCount + "\n" + "Miss rate: " + MissRate() + "\n\n" +
+                "Access Time: " + accessTime;
+        }
     }
 
 
+    // returns Hit rate and Miss rate
+    private float HitRate()
+    {
+        return hitCount / (float)accessTimesCount;
+    }
+    private float MissRate()
+    {
+        return missCount / (float)accessTimesCount;
+    }
+
+
+    private void DM()
+    {
+        SetInputs();
+        DirectMap();
+        DisplayResults();
+        accessTimesCount++;
+    }
+    private void FA()
+    {
+        SetInputs();
+        FullyAssociative();
+        DisplayResults();
+        accessTimesCount++;
+    }
+    private void SA()
+    {
+        SetInputs();
+        SetAssociative();
+        DisplayResults();
+        accessTimesCount++;
+    }
+
+
+    // Button functions
     public void ShowInstructions()
     {
         mainCanvas.enabled = false;
@@ -442,6 +486,16 @@ public class Program : MonoBehaviour
         instructionsCanvas.enabled = false;
         mainCanvas.enabled = true;
     }
+    public void ShowErrorCanvas()
+    {
+        mainCanvas.enabled = false;
+        errorCanvas.enabled = true;
+    }
+    public void ErrorDone()
+    {
+        errorCanvas.enabled = false;
+        mainCanvas.enabled = true;
+    }
     public void BackToMenu()
     {
         SceneManager.LoadScene(0);
@@ -450,8 +504,5 @@ public class Program : MonoBehaviour
     {
         Application.Quit();
     }
-
-
-
 
 }
