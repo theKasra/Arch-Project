@@ -59,102 +59,6 @@ public class Program : MonoBehaviour
         instructionsCanvas.enabled = true;
         mainCanvas.enabled = false;
         errorCanvas.enabled = false;
-
-        // Test
-        //memorySize = 1024 * 1024;
-        //cacheSize = 16 * 1024;
-        //blockSize = 16;
-
-        //cache = new int[cacheSize];
-
-        /// DIRECT MAP TEST
-        {
-            //tagIndexTable = new bool[(int)Math.Pow(2,TagBitCount()),(int)Math.Pow(2, IndexBitCount())];
-
-            //hexAddress = "01000";
-            //Hex2Bin(hexAddress);
-
-            //Debug.Log("BinAddress: " + binAddress);
-            //Debug.Log("Tag: " + Tag());
-            //Debug.Log("Index: " + Index());
-            //Debug.Log("Offset: " + Offset());
-
-            //DirectMap();
-            //Debug.Log("hit: " + isHit);
-            //Debug.Log("miss: " + isMiss);
-            //Debug.Log("valid: " + isValid);
-
-            //hexAddress = "01000";
-            //Hex2Bin(hexAddress);
-
-            //Debug.Log("BinAddress: " + binAddress);
-            //Debug.Log("Tag: " + Tag());
-            //Debug.Log("Index: " + Index());
-            //Debug.Log("Offset: " + Offset());
-
-            //DirectMap();
-            //Debug.Log("hit: " + isHit);
-            //Debug.Log("miss: " + isMiss);
-            //Debug.Log("valid: " + isValid);
-
-            //hexAddress = "59000";
-            //Hex2Bin(hexAddress);
-
-            //Debug.Log("BinAddress: " + binAddress);
-            //Debug.Log("Tag: " + Tag());
-            //Debug.Log("Index: " + Index());
-            //Debug.Log("Offset: " + Offset());
-
-            //DirectMap();
-            //Debug.Log("hit: " + isHit);
-            //Debug.Log("miss: " + isMiss);
-            //Debug.Log("valid: " + isValid);
-        }
-        /// FA TEST
-        {
-            //LRUlimit = (int)Math.Pow(2, TagBitCount());
-            //LRU = new List<string>(LRUlimit);
-
-            //hexAddress = "01000";
-            //Hex2Bin(hexAddress);
-            //Debug.Log("BinAddress: " + binAddress);
-            //Debug.Log("Tag: " + Tag());
-            //Debug.Log("Offset: " + Offset());
-
-            //FullyAssociative();
-            //Debug.Log("hit: " + isHit);
-            //Debug.Log("miss: " + isMiss);
-
-            //hexAddress = "01001";
-            //Hex2Bin(hexAddress);
-            //Debug.Log("BinAddress: " + binAddress);
-            //Debug.Log("Tag: " + Tag());
-            //Debug.Log("Offset: " + Offset());
-
-            //FullyAssociative();
-            //Debug.Log("hit: " + isHit);
-            //Debug.Log("miss: " + isMiss);
-
-            //hexAddress = "51A00";
-            //Hex2Bin(hexAddress);
-            //Debug.Log("BinAddress: " + binAddress);
-            //Debug.Log("Tag: " + Tag());
-            //Debug.Log("Offset: " + Offset());
-
-            //FullyAssociative();
-            //Debug.Log("hit: " + isHit);
-            //Debug.Log("miss: " + isMiss);
-        }
-        /// SA TEST
-        {
-            
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     // Converts hexadecimal address to binary address
@@ -388,7 +292,32 @@ public class Program : MonoBehaviour
     }
     private void SetAssociative()
     {
+        int index = Bin2Dec(Index());
+        int offset = Bin2Dec(Offset());
+        int tag = Bin2Dec(Tag());
 
+        if(jaggedArray[index][offset] == tag)
+        {
+            isValid = true;
+            isHit = true;
+            isMiss = false;
+            hitCount++;
+        }
+
+        else
+        {
+            for(int i=0; i<ways; i++)
+            {
+                if(jaggedArray[index][i] == 0)
+                {
+                    isValid = false;
+                    isMiss = true;
+                    isHit = false;
+                    missCount++;
+                    jaggedArray[index][i] = tag;
+                }
+            }
+        }
     }
 
     // Step and Calculate button functions
@@ -413,6 +342,7 @@ public class Program : MonoBehaviour
 
         DisplayResults();
     }
+
 
     private void DisplayResults()
     {
