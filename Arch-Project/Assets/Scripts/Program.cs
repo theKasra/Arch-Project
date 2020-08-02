@@ -49,7 +49,8 @@ public class Program : MonoBehaviour
     private bool stepClicked, calculateClicked;
     private float accessTime;
     private int accessTimesCount = 0;
-    private bool isHit, isMiss, isValid;
+
+    private string hitOrMiss;
     private int hitCount, missCount;
 
     // Start is called before the first frame update
@@ -60,6 +61,7 @@ public class Program : MonoBehaviour
         mainCanvas.enabled = false;
         errorCanvas.enabled = false;
     }
+
 
     // Converts hexadecimal address to binary address
     private string Hex2Bin(string hex)
@@ -89,6 +91,11 @@ public class Program : MonoBehaviour
     // Sets inputs
     private void SetInputs()
     {
+        if(SceneManager.GetActiveScene().name == "Set Associative")
+        {
+            CalculateParams4SA();
+        }
+
         try
         {
             if (memoryKB.isOn == true)
@@ -110,8 +117,6 @@ public class Program : MonoBehaviour
             {
                 cacheSize = long.Parse(cacheSizeInput.text) * 1024 * 1024;
             }
-
-
 
             hexAddress = addressInput.text;
             Hex2Bin(hexAddress);
@@ -147,6 +152,16 @@ public class Program : MonoBehaviour
                     {
                         jaggedArray[i] = new int[ways];
                     }
+
+                    for (int i = 0; i < sets; i++)
+                    {
+                        for (int j = 0; j < ways; j++)
+                        {
+                            jaggedArray[i][j] = -1;
+                        }
+                    }
+
+                    LRU = new List<string>(ways);
                     
                     setsInput.enabled = false;
                     waysInput.enabled = false;
@@ -166,17 +181,17 @@ public class Program : MonoBehaviour
 
 
     // Counts total amount of address bits
-    public int AddressBitCount()
+    private int AddressBitCount()
     {
         return (int)Mathf.Log(memorySize, 2);
     }
     // Counts the amount of offset bits
-    public int OffsetBitCount()
+    private int OffsetBitCount()
     {
         return (int)Mathf.Log(blockSize, 2);
     }
     // Counts the amount of index bits
-    public int IndexBitCount()
+    private int IndexBitCount()
     {
         if (SceneManager.GetActiveScene().name == "Direct Map")
         {
@@ -188,15 +203,126 @@ public class Program : MonoBehaviour
             return 0;
         }
 
-        else
+        else if (SceneManager.GetActiveScene().name == "Set Associative")
         {
             return (int)Mathf.Log(sets, 2);
         }
+
+        else
+        {
+            return -1;
+        }
     }
     // Counts the amount of tag bits
-    public int TagBitCount()
+    private int TagBitCount()
     {
         return AddressBitCount() - (IndexBitCount() + OffsetBitCount());
+    }
+
+    // In SA if only 3 parameters are given, the 4th one will be calculated
+    private void CalculateParams4SA()
+    {
+        if(string.IsNullOrEmpty(cacheSizeInput.text))
+        {
+            int _blockSize = int.Parse(blockSizeInput.text);
+            int _sets = int.Parse(setsInput.text);
+            int _ways = int.Parse(waysInput.text);
+
+            int blockSizeBits = (int)Mathf.Log(_blockSize, 2);
+            int setBits = (int)Mathf.Log(_sets, 2);
+            int wayBits = (int)Mathf.Log(_ways, 2);
+
+            int cacheSizeBits = blockSizeBits + setBits + wayBits;
+            cacheSize = (long)Mathf.Pow(2, cacheSizeBits);
+
+            if(cacheKB.enabled == true)
+            {
+                cacheSizeInput.text = (cacheSize / 1024).ToString();
+            }
+
+            else
+            {
+                cacheSizeInput.text = (cacheSize / 1048576).ToString();
+            }
+        }
+
+        else if(string.IsNullOrEmpty(blockSizeInput.text))
+        {
+            int _cacheSize;
+            if(cacheKB.enabled == true)
+            {
+                _cacheSize = int.Parse(cacheSizeInput.text) * 1024;
+            }
+
+            else
+            {
+                _cacheSize = int.Parse(cacheSizeInput.text) * 1024 * 1024;
+            }
+
+            int _sets = int.Parse(setsInput.text);
+            int _ways = int.Parse(waysInput.text);
+
+            int cacheSizeBits = (int)Mathf.Log(_cacheSize, 2);
+            int setBits = (int)Mathf.Log(_sets, 2);
+            int wayBits = (int)Mathf.Log(_ways, 2);
+
+            int blockSizeBits = cacheSizeBits - (setBits + wayBits);
+            blockSize = (int)Mathf.Pow(2, blockSizeBits);
+
+            blockSizeInput.text = blockSize.ToString();
+        }
+
+        else if(string.IsNullOrEmpty(setsInput.text))
+        {
+            int _cacheSize;
+            if (cacheKB.enabled == true)
+            {
+                _cacheSize = int.Parse(cacheSizeInput.text) * 1024;
+            }
+
+            else
+            {
+                _cacheSize = int.Parse(cacheSizeInput.text) * 1024 * 1024;
+            }
+
+            int _blockSize = int.Parse(blockSizeInput.text);
+            int _ways = int.Parse(waysInput.text);
+
+            int cacheSizeBits = (int)Mathf.Log(_cacheSize, 2);
+            int blockSizeBits = (int)Mathf.Log(_blockSize, 2);
+            int wayBits = (int)Mathf.Log(_ways, 2);
+
+            int setBits = cacheSizeBits - (blockSizeBits + wayBits);
+            sets = (int)Mathf.Pow(2, setBits);
+
+            setsInput.text = sets.ToString();
+        }
+
+        else
+        {
+            int _cacheSize;
+            if (cacheKB.enabled == true)
+            {
+                _cacheSize = int.Parse(cacheSizeInput.text) * 1024;
+            }
+
+            else
+            {
+                _cacheSize = int.Parse(cacheSizeInput.text) * 1024 * 1024;
+            }
+
+            int _blockSize = int.Parse(blockSizeInput.text);
+            int _sets = int.Parse(setsInput.text);
+
+            int cacheSizeBits = (int)Mathf.Log(_cacheSize, 2);
+            int blockSizeBits = (int)Mathf.Log(_blockSize, 2);
+            int setBits = (int)Mathf.Log(_sets, 2);
+
+            int wayBits = cacheSizeBits - (blockSizeBits + setBits);
+            ways = (int)Mathf.Pow(2, wayBits);
+
+            waysInput.text = ways.ToString();
+        }
     }
 
 
@@ -224,9 +350,7 @@ public class Program : MonoBehaviour
 
         if(dmCache[index] == 0)
         {
-            isValid = false;
-            isMiss = true;
-            isHit = false;
+            hitOrMiss = "Miss";
             missCount++;
             dmCache[index] = 1;
             tagIndexTable[tag, index] = true;
@@ -234,18 +358,15 @@ public class Program : MonoBehaviour
 
         else
         {
-            isValid = true;
             if(tagIndexTable[tag, index] == true)
             {
-                isHit = true;
-                isMiss = false;
+                hitOrMiss = "Hit";
                 hitCount++;
             }
 
             else
             {
-                isMiss = true;
-                isHit = false;
+                hitOrMiss = "Miss";
                 missCount++;
                 tagIndexTable[tag, index] = true;
             }
@@ -257,12 +378,10 @@ public class Program : MonoBehaviour
         
         if(LRU.Contains(tag))
         {
-            isValid = true;
-            isHit = true;
-            isMiss = false;
+            hitOrMiss = "Hit";
             hitCount++;
 
-            // most recently used most be at the top
+            // most recently used must be at the top
             LRU.RemoveAt(LRU.IndexOf(tag));
             LRU.Insert(0, tag);
         }
@@ -274,18 +393,14 @@ public class Program : MonoBehaviour
                 // Victimize
                 LRU.RemoveAt(LRUlimit);
                 LRU.Insert(0, tag);
-                isValid = false;
-                isMiss = true;
-                isHit = false;
+                hitOrMiss = "Miss";
                 missCount++;
             }
 
             else
             {
                 LRU.Add(tag);
-                isValid = false;
-                isMiss = true;
-                isHit = false;
+                hitOrMiss = "Miss";
                 missCount++;
             }
         }
@@ -296,29 +411,58 @@ public class Program : MonoBehaviour
         int offset = Bin2Dec(Offset());
         int tag = Bin2Dec(Tag());
 
+
         if(jaggedArray[index][offset] == tag)
         {
-            isValid = true;
-            isHit = true;
-            isMiss = false;
+            hitOrMiss = "Hit";
             hitCount++;
+            LRU.Remove(tag.ToString());
+            LRU.Insert(0, tag.ToString());
         }
 
         else
         {
-            for(int i=0; i<ways; i++)
+            for (int i = 0; i < ways; i++)
             {
-                if(jaggedArray[index][i] == 0)
+                if (jaggedArray[index][i] == -1)
                 {
-                    isValid = false;
-                    isMiss = true;
-                    isHit = false;
-                    missCount++;
                     jaggedArray[index][i] = tag;
+
+                    if(LRU.Contains(tag.ToString()))
+                    {
+                        LRU.Remove(tag.ToString());
+                        LRU.Insert(0, tag.ToString());
+                    }
+
+                    else
+                    {
+                        LRU.Insert(0, tag.ToString());
+                    }
+                    break;
+                }
+
+                else if (i == ways - 1 && jaggedArray[index][i] != -1)
+                {
+                    for (int j = 0; j < ways; j++)
+                    {
+                        if (string.Equals(jaggedArray[index][j].ToString(), LRU[i]))
+                        {
+                            // victimize
+                            jaggedArray[index][j] = tag;
+
+                            // re-adjusting LRU List
+                            LRU.RemoveAt(i);
+                            LRU.Insert(0, tag.ToString());
+                            break;
+                        }
+                    }
                 }
             }
+            missCount++;
+            hitOrMiss = "Miss";
         }
     }
+
 
     // Step and Calculate button functions
     public void Step()
@@ -342,7 +486,7 @@ public class Program : MonoBehaviour
 
         DisplayResults();
     }
-
+    
 
     private void DisplayResults()
     {
@@ -357,8 +501,7 @@ public class Program : MonoBehaviour
             "Tag bits: " + Tag() + "\n\n" +
             "Index bits: " + Index() + "\n\n" +
             "Block offset bits: " + Offset() + "\n\n" +
-            "Hit: " + isHit + "\n" + "Miss: " + isMiss + "\n\n" +
-            "Validity: " + isValid;
+             hitOrMiss;
         }
 
         else if (calculateClicked)
@@ -371,7 +514,7 @@ public class Program : MonoBehaviour
     }
 
 
-    // returns Hit rate and Miss rate
+    // Returns Hit rate and Miss rate
     private float HitRate()
     {
         return hitCount / (float)accessTimesCount;
@@ -405,7 +548,7 @@ public class Program : MonoBehaviour
     }
 
 
-    // Button functions
+    // Other button functions
     public void ShowInstructions()
     {
         mainCanvas.enabled = false;
