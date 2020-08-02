@@ -10,7 +10,10 @@ public class SceneLoader : MonoBehaviour
 
     private void Start()
     {
-        aboutPanel.gameObject.SetActive(false);
+        if(SceneManager.GetActiveScene().name == "Start")
+        {
+            aboutPanel.gameObject.SetActive(false);
+        }
     }
 
     public void GoToDirectMap()
